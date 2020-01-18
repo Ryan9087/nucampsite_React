@@ -40,3 +40,21 @@ h2 {
 .navbar-dark {
   background-color: #901CAD;
 }
+
+.fa-pencil {
+  padding-right: 5px;;
+}
+
+label.col-md-12.col-form-label {
+  padding: 0 0 0 18px;
+  margin: 20px 0 -10px 0;
+}
+
+form div.form-group row {
+  padding: 30px;
+  margin: 20px 0 0 0;
+}
+
+.form-group.topHeading {
+  margin: -20px 0 15px -12px;
+}
