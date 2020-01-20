@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem, Modal, ModalHeader, ModalBody, Form, FormGroup, Input, Label, Col, Row } from 'reactstrap';
+import { Button, Card, CardImg, CardText, CardBody, Breadcrumb, BreadcrumbItem, Modal, ModalHeader, ModalBody, Label } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 
@@ -19,9 +19,8 @@ class CommentForm extends React.Component {
     }
 
     handleSubmit(values) {
-        console.log('Current state is: ' + JSON.stringify(values));
-        alert('Current state is: ' + JSON.stringify(values));
         this.toggleModal();
+        this.props.addComment(this.props.campsiteId, values.rating, values.author, values.text);
     }
 
     toggleModal() {
@@ -33,7 +32,7 @@ class CommentForm extends React.Component {
     render() {
       return ( 
         <React.Fragment> 
-        <div class="my-4">
+        <div className="my-4">
         <Button outline onClick={this.toggleModal}><i className="fa fa-pencil fa-lg" />Submit Comment</Button>
         </div>    
         <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
@@ -113,29 +112,22 @@ function RenderCampsite({campsite}) {
 
 
 
-    function RenderComments({comments}) {
+    function RenderComments({comments, addComment, campsiteId}) {
         if (comments) {
             return (
               <div className="cold-md-5 m-1">
                 <h4>Comments</h4>
                 {comments.map(comment => {
                   return (
-                    <div>
-                      <p>
-                        {comment.text} <br />
-                        -- {comment.author},{" "}
-                        {new Intl.DateTimeFormat("en-US", {
-                          year: "numeric",
-                          month: "short",
-                          day: "2-digit"
-                        }).format(new Date(Date.parse(comment.date)))}
+                    <div key={comment.id}>
+                      <p>{comment.text} <br />
+                        -- {comment.author},{new Intl.DateTimeFormat("en-US", {year: "numeric",
+                        month: "short", day: "2-digit"}).format(new Date(Date.parse(comment.date)))}
                       </p>
                     </div>
                   );
                 })}
-                
-                <CommentForm />
-
+                <CommentForm campsiteId={campsiteId} addComment={addComment} />
               </div>
             );
 
@@ -160,7 +152,11 @@ function RenderCampsite({campsite}) {
             </div>
                     <div className="row">
                         <RenderCampsite campsite={props.campsite} />
-                        <RenderComments comments={props.comments} />
+                        <RenderComments 
+                            comments={props.comments}
+                            addComment={props.addComment}
+                            campsiteId={props.campsite.id}
+                    />
                     </div>
                 </div>
             );
