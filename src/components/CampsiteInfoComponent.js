@@ -33,17 +33,15 @@ class CommentForm extends React.Component {
     render() {
       return ( 
         <React.Fragment> 
+        <div class="my-4">
         <Button outline onClick={this.toggleModal}><i className="fa fa-pencil fa-lg" />Submit Comment</Button>
-        
+        </div>    
         <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
-            <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader>
+            <ModalHeader className="pl-3" toggle={this.toggleModal}>Submit Comment</ModalHeader>
             <ModalBody>
             <LocalForm onSubmit={values => this.handleSubmit(values)}>
-            <Row className="form-group topHeading">
-                    <Label htmlFor="Rating" md={12}>Rating</Label>
-            </Row>    
-                <Row>
-                    <Col md={12}>
+            <div className="form-group"><Label htmlFor="Rating" md={12}>Rating</Label></div>
+            <div className="form-group">        
                         <Control.select model=".Rating" id="Rating" name="Rating"
                                 model=".Rating"
                                 name="Rating"
@@ -54,13 +52,11 @@ class CommentForm extends React.Component {
                             <option>4</option>
                             <option>5</option>
                         </Control.select>
-                    </Col>
-                </Row>
-                <Row className="form-group">
+            </div>            
+            <div className="form-group">  
                     <Label htmlFor="Name" md={12}>Your Name</Label>
-                </Row>
-                <Row>    
-                    <Col md={12}>
+            </div>          
+            <div className="form-group">       
                         <Control.text model=".Name" id="Name" name="Name"
                             placeholder="Name"
                             className="form-control" 
@@ -80,28 +76,21 @@ class CommentForm extends React.Component {
                                     maxLength: 'Must be 15 characters or less'
                                 }}
                             />
-                    </Col>
-                </Row>
-                <Row className="form-group mb-0 mt-3">
+            </div>                 
+            <div className="form-group">     
                     <Label htmlFor="Comment" md={2}>Comment</Label>
-                </Row>
-                <Row>    
-                    <Col md={12}>
-                        <Control.textarea model=".Comment" id="Comment" name="Comment"
-                            rows="12"
-                            className="form-control"
-                        />
-                    </Col>    
-                </Row>
-                <Row className="form-group mt-4 mb-1">
-                    <Col md={{size: 10}}>
+                    <Control.textarea model=".Comment" id="Comment" name="Comment"
+                        rows="12"
+                        className="form-control"
+                    />
+            </div> 
+            <div className="form-group">         
                         <Button type="submit" color="primary">
                             Submit
                         </Button>
-                    </Col>
-                </Row>
-                </LocalForm>
-            </ModalBody>
+            </div>             
+            </LocalForm>
+        </ModalBody>
         </Modal>
         </React.Fragment>
       );
