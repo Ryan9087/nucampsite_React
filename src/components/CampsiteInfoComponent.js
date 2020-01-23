@@ -1,26 +1,56 @@
 import React from "react";
-import { Button, Card, CardImg, CardText, CardBody, Breadcrumb, BreadcrumbItem, Modal, ModalHeader, ModalBody, Label } from 'reactstrap';
+import { Button, Card, CardImg, CardText, CardBody, Breadcrumb, BreadcrumbItem, 
+    Modal, ModalHeader, ModalBody, Label } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
+import { baseUrl } from '../shared/baseUrl';
 
 const maxLength = len => val => !val || (val.length <= len);
 const minLength = len => val => val && (val.length >= len);
+
+function RenderCampsite({campsite}) {
+    return (
+      <div className="col-md-5 m-1">
+        <Card>
+          <CardImg top src={baseUrl + campsite.image} alt={campsite.name} />  
+          <CardBody>
+             <CardText>{campsite.description}</CardText>  
+          </CardBody>  
+        </Card>  
+      </div>
+    );
+}   
+
+function RenderComments({comments, addComment, campsiteId}) {
+    if (comments) {
+        return (
+          <div className="cold-md-5 m-1">
+            <h4>Comments</h4>
+            {comments.map(comment => {
+              return (
+                <div key={comment.id}>
+                  <p>{comment.text} <br />
+                    -- {comment.author},{new Intl.DateTimeFormat("en-US", {year: "numeric", month: "short", day: "2-digit"}).format(new Date(Date.parse(comment.date)))}
+                  </p>
+                </div>
+              );
+            })}
+            <CommentForm campsiteId={campsiteId} addComment={addComment} />
+          </div>
+        );
+    }
+    return <div />
+}
 
 class CommentForm extends React.Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
           isModalOpen:false 
         };
         this.toggleModal = this.toggleModal.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    handleSubmit(values) {
-        this.toggleModal();
-        this.props.addComment(this.props.campsiteId, values.rating, values.author, values.text);
     }
 
     toggleModal() {
@@ -29,22 +59,26 @@ class CommentForm extends React.Component {
         });
     }
 
+    handleSubmit(values) {
+        this.toggleModal();
+        this.props.addComment(this.props.campsiteId, values.rating, values.author, values.text);
+    }
+
+
     render() {
       return ( 
-        <React.Fragment> 
-        <div className="my-4">
-        <Button outline onClick={this.toggleModal}><i className="fa fa-pencil fa-lg" />Submit Comment</Button>
-        </div>    
+        <div>
+        <Button outline onClick={this.toggleModal}>
+         <i className="fa fa-pencil fa-lg" />Submit Comment
+         </Button>   
         <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
             <ModalHeader className="pl-3" toggle={this.toggleModal}>Submit Comment</ModalHeader>
             <ModalBody>
             <LocalForm onSubmit={values => this.handleSubmit(values)}>
-            <div className="form-group"><Label htmlFor="Rating" md={12}>Rating</Label></div>
-            <div className="form-group">        
-                        <Control.select model=".Rating" id="Rating" name="Rating"
-                                model=".Rating"
-                                name="Rating"
-                                className="form-control">
+            <div className="form-group">
+                <Label htmlFor="Rating" md={12}>Rating</Label>        
+                <Control.select model=".rating" id="rating" name="rating"
+                            className="form-control">
                             <option>1</option>
                             <option>2</option>
                             <option>3</option>
@@ -53,11 +87,9 @@ class CommentForm extends React.Component {
                         </Control.select>
             </div>            
             <div className="form-group">  
-                    <Label htmlFor="Name" md={12}>Your Name</Label>
-            </div>          
-            <div className="form-group">       
-                        <Control.text model=".Name" id="Name" name="Name"
-                            placeholder="Name"
+                    <Label htmlFor="author" md={12}>Your Name</Label>             
+                        <Control.text model=".author" id="author" name="author"
+                            placeholder="Your Name"
                             className="form-control" 
                             validators={{
                                 minLength: minLength(2),
@@ -66,75 +98,32 @@ class CommentForm extends React.Component {
                         />
                         <Errors
                                 className="text-danger"
-                                model=".Name"
+                                model=".author"
                                 show="touched"
                                 component="div"
                                 messages={{
-                                    required: 'Required',
                                     minLength: 'Must be at least 2 characters',
                                     maxLength: 'Must be 15 characters or less'
                                 }}
                             />
             </div>                 
             <div className="form-group">     
-                    <Label htmlFor="Comment" md={2}>Comment</Label>
-                    <Control.textarea model=".Comment" id="Comment" name="Comment"
-                        rows="12"
+                    <Label htmlFor="Text">Comment</Label>
+                    <Control.textarea model=".text" id="text" name="text"
+                        rows="6"
                         className="form-control"
                     />
-            </div> 
-            <div className="form-group">         
+            </div>       
                         <Button type="submit" color="primary">
                             Submit
-                        </Button>
-            </div>             
+                        </Button>           
             </LocalForm>
         </ModalBody>
         </Modal>
-        </React.Fragment>
+        </div>
       );
     }
 }
-
-
-function RenderCampsite({campsite}) {
-        return (
-            <div className="col-md-5 m-1">
-                <Card>
-                    <CardImg top src={campsite.image} alt={campsite.name} />
-                    <CardBody>
-                        <CardText>{campsite.description}</CardText>
-                    </CardBody>
-                </Card>
-            </div>
-        );
-    }
-
-
-
-    function RenderComments({comments, addComment, campsiteId}) {
-        if (comments) {
-            return (
-              <div className="cold-md-5 m-1">
-                <h4>Comments</h4>
-                {comments.map(comment => {
-                  return (
-                    <div key={comment.id}>
-                      <p>{comment.text} <br />
-                        -- {comment.author},{new Intl.DateTimeFormat("en-US", {year: "numeric",
-                        month: "short", day: "2-digit"}).format(new Date(Date.parse(comment.date)))}
-                      </p>
-                    </div>
-                  );
-                })}
-                <CommentForm campsiteId={campsiteId} addComment={addComment} />
-              </div>
-            );
-
-        }
-    };
-
-
 
     function CampsiteInfo(props) {
         if (props.campsite) {
