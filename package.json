@@ -22,7 +22,7 @@
     "social": "^0.4.0",
     "typeface-lobster": "^0.0.72",
     "typeface-open-sans": "^0.0.75",
-    "yarn": "^1.21.1"
+    "yarn": "^1.22.0"
   },
   "scripts": {
     "start": "react-scripts start",
